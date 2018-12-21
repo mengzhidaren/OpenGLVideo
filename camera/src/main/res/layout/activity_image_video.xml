@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".imagevideo.ImageVideoActivity">
+
+    <com.camera.yyl.imagevideo.ImgVideoView
+            android:id="@+id/imgVideoView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+<LinearLayout
+        android:layout_width="wrap_content"
+        android:orientation="vertical"
+        android:layout_height="match_parent"></LinearLayout>
+    <Button
+            android:layout_width="wrap_content"
+            android:text="change"
+            android:id="@+id/change"
+            android:layout_height="wrap_content"/>
+    <Button
+            android:layout_width="wrap_content"
+            android:text="record"
+            android:id="@+id/record"
+            android:layout_height="wrap_content"/>
+</FrameLayout>

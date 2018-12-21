@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity">
+
+
+
+    <Button
+
+            android:text="摄像机"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/camera"/>
+    <Button
+
+            android:text="录制视频"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/record"/>
+    <Button
+
+            android:text="图片合成视频"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imgVideo"/>
+    <Button
+
+            android:text="声音录制"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/audioRecord"/>
+    <Button
+
+            android:text="直播推流"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/liveVideo"/>
+</LinearLayout>

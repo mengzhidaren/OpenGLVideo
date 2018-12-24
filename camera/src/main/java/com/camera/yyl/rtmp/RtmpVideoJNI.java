@@ -20,13 +20,13 @@ public abstract class RtmpVideoJNI {
     }
 
     public void onPushVideoInfoData(byte[] data, boolean isKeyFrame) {
-        if (data != null)
-            pushVideoInfo(data, data.length, isKeyFrame);
+        pushVideoInfo(data, data.length, isKeyFrame);
     }
+
     public void onPushAudioInfoData(byte[] data) {
-        if (data != null)
-            pushAudioInfo(data, data.length);
+        pushAudioInfo(data, data.length);
     }
+
     private native void initPush(String pushUrl);
 
     private native void stopPush();
@@ -34,6 +34,7 @@ public abstract class RtmpVideoJNI {
     private native void pushVideoSPSPPS(byte[] sps, int sps_len, byte[] pps, int pps_len);
 
     private native void pushVideoInfo(byte[] data, int data_len, boolean isKeyFrame);
+
     private native void pushAudioInfo(byte[] data, int data_len);
 
 

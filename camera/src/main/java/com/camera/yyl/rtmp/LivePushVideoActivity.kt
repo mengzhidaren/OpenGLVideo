@@ -68,7 +68,7 @@ class LivePushVideoActivity : AppCompatActivity() {
     fun startRtmp() {
         start = !start
         if (start) {
-            RtmpPushVideo.instance.startPush("http://www.baidu.com")
+            RtmpPushVideo.instance.startPush("rtmp://192.168.0.79/rtmplive/room")
         } else {
             rtmpRecord?.stopRecord()
             rtmpRecord = null

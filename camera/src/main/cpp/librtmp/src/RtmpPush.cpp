@@ -44,17 +44,16 @@ void *callBackPush(void *data) {
     LOGE("联接成功  开始推流")
     rtmpPush->callBackJava->onConnectEvent(THREAD_CHILD, CONNECT_SUCCESS);
     rtmpPush->startPushing = true;
-    rtmpPush->startTime=RTMP_GetTime();
+    rtmpPush->startTime = RTMP_GetTime();
     while (true) {
         if (!rtmpPush->startPushing) {
             break;
         }
         RTMPPacket *packet = NULL;
         packet = rtmpPush->queue->getRtmpPacket();
-
         if (packet != NULL) {
             int result = RTMP_SendPacket(rtmpPush->rtmp, packet, 1);
-            LOGI("RTMP_SendPacket   result=", result);
+            LOGI("RTMP_SendPacket   result=%d", result);
             RTMPPacket_Free(packet);
             free(packet);
             packet = NULL;
@@ -67,7 +66,7 @@ void *callBackPush(void *data) {
         RTMP_Free(rtmpPush->rtmp);
         rtmpPush->rtmp = NULL;
         LOGE("推流 over")
-    }
+    };
 
     pthread_exit(&rtmpPush->push_thread);
 }
@@ -123,7 +122,7 @@ void RtmpPush::pushSPSPPS(char *sps, int sps_len, char *pps, int pps_len) {
     queue->putRtmpPacket(packet);
 }
 
-void RtmpPush::pushVideoInfo(char *data, int data_len,bool isKeyFrame) {
+void RtmpPush::pushVideoInfo(char *data, int data_len, bool isKeyFrame) {
     int bodysize = data_len + 9;
     RTMPPacket *packet = static_cast<RTMPPacket *>(malloc(sizeof(RTMPPacket)));
     RTMPPacket_Alloc(packet, bodysize);
@@ -132,10 +131,9 @@ void RtmpPush::pushVideoInfo(char *data, int data_len,bool isKeyFrame) {
     char *body = packet->m_body;
     int i = 0;
 
-    if(isKeyFrame)
-    {
+    if (isKeyFrame) {
         body[i++] = 0x17;
-    } else{
+    } else {
         body[i++] = 0x27;
     }
 
@@ -163,7 +161,7 @@ void RtmpPush::pushVideoInfo(char *data, int data_len,bool isKeyFrame) {
 
 
 void RtmpPush::pushAudioInfo(char *data, int data_len) {
-    int bodysize = data_len *2;
+    int bodysize = data_len * 2;
     RTMPPacket *packet = static_cast<RTMPPacket *>(malloc(sizeof(RTMPPacket)));
     RTMPPacket_Alloc(packet, bodysize);
     RTMPPacket_Reset(packet);
@@ -171,14 +169,10 @@ void RtmpPush::pushAudioInfo(char *data, int data_len) {
     char *body = packet->m_body;
 
 
-
-
-
-
 }
 
 void RtmpPush::pushStop() {
-    startPushing= false;
+    startPushing = false;
     queue->notifyQueue();
-    pthread_join(push_thread,NULL);
+    pthread_join(push_thread, NULL);
 }

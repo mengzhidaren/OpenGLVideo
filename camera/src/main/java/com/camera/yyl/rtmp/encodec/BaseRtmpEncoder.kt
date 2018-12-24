@@ -77,7 +77,7 @@ open class BaseRtmpEncoder : EGLSurfaceBase {
                 eglThread?.isChange = true
                 eglThread?.start()
                 videoEncodecThread?.start()
-                audioEncodecThread?.start()
+            //    audioEncodecThread?.start()
                 audioRecordUtils.startRecord()
                 _i(tag, "startRecord  success")
                 return true
@@ -99,12 +99,12 @@ open class BaseRtmpEncoder : EGLSurfaceBase {
 
     //给音频喂数据
     fun putPCMData(buffer: ByteArray, size: Int) {
-        if (audioRecordUtils.isRecord() && size > 0) {
+        if (audioEncodecThread?.isExit==false&&audioRecordUtils.isRecord() && size > 0) {
             val inputBufferindex = audioCodec?.dequeueInputBuffer(0) ?: -1
             if (inputBufferindex >= 0) {
                 val byteBuffer = audioCodec!!.inputBuffers[inputBufferindex]
-                byteBuffer.clear()
-                byteBuffer.put(buffer)
+                byteBuffer?.clear()
+                byteBuffer?.put(buffer)
                 val pts = getAudioPts(size, sampleRate)
                 audioCodec?.queueInputBuffer(inputBufferindex, 0, size, pts, 0)
             }
@@ -142,7 +142,7 @@ open class BaseRtmpEncoder : EGLSurfaceBase {
         val mediaFormat = MediaFormat.createAudioFormat(mimeType, sampleRate, channelCount)
         mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, 96000)
         mediaFormat.setInteger(MediaFormat.KEY_AAC_PROFILE, MediaCodecInfo.CodecProfileLevel.AACObjectLC)
-        mediaFormat.setInteger(MediaFormat.KEY_MAX_INPUT_SIZE, 4096)
+        mediaFormat.setInteger(MediaFormat.KEY_MAX_INPUT_SIZE, 4096*10)
         try {
             audioCodec = MediaCodec.createEncoderByType(mimeType)
             audioCodec?.configure(mediaFormat, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE)
@@ -200,6 +200,7 @@ class RtmpVideoEncodecThread(private val baseRender: WeakReference<BaseRtmpEncod
             }
             //出队  输出到mediaBufferInfo
             var outputBufferIndex = videoCodec.dequeueOutputBuffer(bufferInfo, 0)
+            isKeyFrame = false
             if (outputBufferIndex == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {//获取SPS、PPS
                 val spsb = videoCodec.outputFormat.getByteBuffer("csd-0")
                 sps = ByteArray(spsb.remaining())
@@ -221,7 +222,7 @@ class RtmpVideoEncodecThread(private val baseRender: WeakReference<BaseRtmpEncod
 
                         val data = ByteArray(it.remaining())
                         it.get(data, 0, data.size)
-                        _i(tag, "video frame data=${byteToHex(data)} ")
+                     //   _i(tag, "video frame data=${byteToHex(data)} ")
                         if (pts == 0L) {
                             pts = bufferInfo.presentationTimeUs
                         }
@@ -263,13 +264,13 @@ class RtmpAudioEncodecThread(private val baseRender: WeakReference<BaseRtmpEncod
     private var audioCodec: MediaCodec = baseRender.get()?.audioCodec!!
     private var bufferInfo = MediaCodec.BufferInfo()
 
-    private var isExit = false
+    var isExit = true
     private var pts: Long = 0
-
     override fun run() {
         super.run()
         _i(tag, "音频编码线程 开始录制")
         audioCodec.start()
+        isExit=false
         while (true) {
             if (isExit) {
                 audioCodec.stop()
@@ -293,7 +294,7 @@ class RtmpAudioEncodecThread(private val baseRender: WeakReference<BaseRtmpEncod
                         it.get(data, 0, data.size)
                         baseRender.get()?.onMediaInfoListener?.onAudioInfo(data)
 
-                        _i(tag, "audio frame data=${byteToHex(data)} ")
+                   //     _i(tag, "audio frame data=${byteToHex(data)} ")
                     }
 
                     if (pts == 0L) {
